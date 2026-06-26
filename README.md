@@ -5,7 +5,7 @@
 
 <p align="center">
   <a href="https://pypi.org/project/liangmai/"><img src="https://img.shields.io/pypi/v/liangmai?label=PyPI&color=blue" alt="PyPI"></a>
-a href="https://pypi.org/project/liangmai/"><img src="https://img.shields.io/pypi/pyversions/liangmai" alt="Python"></a>
+  <a href="https://pypi.org/project/liangmai/"><img src="https://img.shields.io/pypi/pyversions/liangmai" alt="Python"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 </p>
 
@@ -120,55 +120,231 @@ except RuntimeError as e:
 
 ---
 
-## 接口全览（105 个）
+## 接口参考（105 个）
+
+> 以下所有接口通过 `client.方法名(参数)` 调用，返回 `{"code":0, "msg":"success", "data":[...]}` 格式。
 
 ### 📋 列表与日历（13）
-`stock_list` `hs_list_main` `ipo_calendar` `sector_tree` `sector_constituents` `stock_sectors` `index_list_main` `bj_list_stocks` `bj_list_indices` `hk_list_stocks` `kc_list_stocks` `fund_list_all` `fund_list_etf`
+
+获取基础股票列表、指数树、板块信息。
+
+```python
+stocks      = client.stock_list()           # 沪深京股票合并列表（推荐）
+stocks_main = client.hs_list_main()         # 沪深A股基础列表
+ipo         = client.ipo_calendar()         # 新股日历（按申购日期倒序）
+tree        = client.sector_tree()          # 指数/行业/概念树
+members     = client.sector_constituents(sector_code="sw1_01")   # 按板块查成分
+sectors     = client.stock_sectors(ts_code="000001")             # 股票所属板块
+indices     = client.index_list_main()      # 沪深主要指数列表
+bj          = client.bj_list_stocks()       # 京市股票列表
+bj_idx      = client.bj_list_indices()      # 京市指数列表
+hk          = client.hk_list_stocks()       # 港股列表
+kc          = client.kc_list_stocks()       # 科创板列表
+funds       = client.fund_list_all()        # 沪深基金列表
+etf         = client.fund_list_etf()        # ETF基金列表
+```
 
 ### 📊 股池（5）
-`pool_limit_up` `pool_limit_down` `pool_strong` `pool_subnew` `pool_broken_board`
+
+按交易日获取涨停、跌停、强势、次新、炸板股票池。
+
+```python
+limit_up    = client.pool_limit_up(trade_date="2025-06-26")    # 涨停股池
+limit_down  = client.pool_limit_down(trade_date="2025-06-26")  # 跌停股池
+strong      = client.pool_strong(trade_date="2025-06-26")      # 强势股池
+subnew      = client.pool_subnew(trade_date="2025-06-26")      # 次新股池
+broken      = client.pool_broken_board(trade_date="2025-06-26") # 炸板股池
+```
 
 ### 🏢 公司资料（16）
-`company_profile` `company_index_membership` `company_exec_history` `company_board_history` `company_supervisor_history` `company_dividend` `company_seo` `company_unlock` `company_quarter_profit` `company_quarter_cashflow` `company_forecast` `company_finance_metrics` `company_holders_top10` `company_float_holders_top10` `company_holder_trend` `company_fund_holdings`
+
+查询单只股票的详细基本面信息，传 `ts_code` / `code` / `symbol` 三者之一即可。
+
+```python
+profile       = client.company_profile(ts_code="000001")           # 公司简介
+index_member  = client.company_index_membership(ts_code="000001")  # 所属指数
+exec_history  = client.company_exec_history(code="000001")         # 历届高管
+board_history = client.company_board_history(symbol="000001")      # 历届董事会
+supervisor    = client.company_supervisor_history(ts_code="000001")# 历届监事会
+dividend      = client.company_dividend(ts_code="000001")          # 近年分红
+seo           = client.company_seo(ts_code="000001")               # 近年增发
+unlock        = client.company_unlock(ts_code="000001")            # 解禁限售
+quarter_profit= client.company_quarter_profit(ts_code="000001")    # 季度利润
+quarter_cash  = client.company_quarter_cashflow(ts_code="000001")  # 季度现金流
+forecast      = client.company_forecast(ts_code="000001")          # 业绩预告
+finance       = client.company_finance_metrics(ts_code="000001")   # 财务指标
+holders_10    = client.company_holders_top10(ts_code="000001")     # 十大股东
+float_10      = client.company_float_holders_top10(ts_code="000001") # 十大流通股东
+holder_trend  = client.company_holder_trend(ts_code="000001")      # 股东户数变化
+fund_hold     = client.company_fund_holdings(ts_code="000001")     # 基金持股
+```
 
 ### 📈 实时行情与逐笔（6）
-`stock_realtime` `stock_ticks_today` `stock_realtime_multi` `quote_realtime_broker` `quote_five_broker` `capital_flow_history`
+
+获取即时行情数据和当日交易明细。
+
+```python
+realtime    = client.stock_realtime(ts_code="601012")                           # 单股实时行情
+ticks       = client.stock_ticks_today(ts_code="601012")                        # 当日逐笔成交
+multi       = client.stock_realtime_multi(stock_codes="000001,600519,300750")   # 多股实时（≤20只）
+broker_rt   = client.quote_realtime_broker(ts_code="601012")                    # 专业行情源实时
+broker_5    = client.quote_five_broker(ts_code="601012")                        # 买卖五档
+flow_hist   = client.capital_flow_history(ts_code="601012", st="20250601", et="20250626")
+```
 
 ### 🕯️ K线/分时（5）
-`quote_bars_latest` `quote_bars_history` `quote_stop_prices` `quote_market_indicators` `stock_instrument`
+
+获取股票的 K 线数据（最新/历史）、涨跌停价、行情指标、基础信息。
+
+```python
+bars_latest = client.quote_bars_latest(
+    full_code="000001.SZ", interval="d", cq="n", lt=5
+)  # 最新K线（lt≤5，日线/前复权）
+
+bars_history = client.quote_bars_history(
+    full_code="000001.SZ", interval="d", cq="n", lt=100,
+    st="20250101", et="20250626"
+)  # 历史K线
+
+stop_prices = client.quote_stop_prices(full_code="000001.SZ")              # 历史涨跌停价
+indicators  = client.quote_market_indicators(full_code="000001.SZ")        # 行情指标
+instrument  = client.stock_instrument(full_code="000001.SZ")               # 股票基础信息
+```
+
+> **参数说明**：`interval` 周期 `1`/`5`/`15`/`30`/`60`/`d`/`w`/`m`/`y`；`cq` 复权 `n`前复权 `b`后复权 `s`不复权；K线 `st`/`et` 格式 `YYYYMMDD` 或 `YYYYMMDDhhmmss`
 
 ### 📑 财务报表（8）
-`fin_balance_sheet` `fin_income_statement` `fin_cashflow_statement` `fin_per_share_index` `fin_capital_structure` `fin_top10_holders` `fin_top10_float_holders` `fin_holder_counts`
+
+查询三大报表、财务指标、股东结构等。
+
+```python
+balance     = client.fin_balance_sheet(full_code="000001.SZ")              # 资产负债表
+income      = client.fin_income_statement(full_code="000001.SZ")           # 利润表
+cashflow    = client.fin_cashflow_statement(full_code="000001.SZ")         # 现金流量表
+per_share   = client.fin_per_share_index(full_code="000001.SZ")            # 财务主要指标
+capital     = client.fin_capital_structure(full_code="000001.SZ")          # 股本结构
+top10       = client.fin_top10_holders(full_code="000001.SZ")              # 十大股东
+float_top10 = client.fin_top10_float_holders(full_code="000001.SZ")        # 十大流通股东
+holder_cnt  = client.fin_holder_counts(full_code="000001.SZ")              # 股东户数
+```
+
+> 可选参数 `st`/`et` 限定日期范围
 
 ### 🔬 技术指标（5）
-`tech_macd` `tech_ma` `tech_boll` `tech_kdj` `stock_ma`
+
+```python
+macd  = client.tech_macd(full_code="000001.SZ", interval="d", cq="n")   # MACD
+ma    = client.tech_ma(full_code="000001.SZ", interval="d", cq="n")     # 均线
+boll  = client.tech_boll(full_code="000001.SZ", interval="d", cq="n")   # BOLL
+kdj   = client.tech_kdj(full_code="000001.SZ", interval="d", cq="n")    # KDJ
+ma_old= client.stock_ma(ts_code="000001", period="5m")                  # 简易均线（旧版）
+```
 
 ### 📉 指数（8）
-`index_realtime_broker` `index_bars_latest` `index_bars_history` `index_tech_macd` `index_tech_ma` `index_tech_boll` `index_tech_kdj`
 
-### 🌏 京市/港股/科创/基金实时（7）
-`bj_quote_realtime` `bj_quote_five` `hk_quote_realtime` `hk_quote_five` `kc_quote_realtime` `kc_quote_five` `fund_quote_realtime`
+指数实时行情、K线和技术指标。
+
+```python
+idx_rt    = client.index_realtime_broker(index_code="000001.SH")        # 指数实时
+idx_latest= client.index_bars_latest(index_full="000001.SH", interval="d") # 指数最新K线
+idx_hist  = client.index_bars_history(index_full="000001.SH", interval="d") # 指数历史K线
+idx_macd  = client.index_tech_macd(index_code="000001.SH")              # 指数MACD
+idx_ma    = client.index_tech_ma(index_code="000001.SH")                # 指数MA
+idx_boll  = client.index_tech_boll(index_code="000001.SH")              # 指数BOLL
+idx_kdj   = client.index_tech_kdj(index_code="000001.SH")               # 指数KDJ
+```
+
+### 🌏 京市/港股/科创板/基金实时（7）
+
+```python
+bj_rt   = client.bj_quote_realtime(ts_code="830799")     # 京市实时
+bj_five = client.bj_quote_five(ts_code="830799")         # 京市五档
+hk_rt   = client.hk_quote_realtime(ts_code="00700")      # 港股实时
+hk_five = client.hk_quote_five(ts_code="00700")          # 港股五档
+kc_rt   = client.kc_quote_realtime(ts_code="688981")     # 科创实时
+kc_five = client.kc_quote_five(ts_code="688981")         # 科创五档
+fd_rt   = client.fund_quote_realtime(ts_code="510050")   # 基金实时
+```
 
 ### 🌐 全市场实时（1）
-`market_realtime_all_network`
+
+```python
+all_market = client.market_realtime_all_network()  # 全市场实时快照（高阶套餐，限频）
+```
 
 ### 🐉 龙虎榜与游资（5）
-`dragon_tiger` `youzi_all` `youzi_by_name` `youzi_gegu` `youzi_name`
+
+```python
+dragon    = client.dragon_tiger(date="2025-06-26")            # 龙虎榜查询
+youzi_all = client.youzi_all(date="2025-06-26")               # 全部游资上榜
+youzi_one = client.youzi_by_name(yzmc="炒股养家", date="2025-06-26") # 按游资名称查询
+youzi_gegu= client.youzi_gegu(code="000001", start_date="2025-06-01", end_date="2025-06-26")
+youzi_names = client.youzi_name()                             # 游资名称列表
+```
 
 ### 🧨 早盘竞价（13）
-`base_bkjj` `base_bkjjzq` `base_zqbk_code_list` `base_bk_code_list` `base_jjqc` `base_jjqc_cje` `base_jjqc_open` `base_jjqc_zf` `base_jjqc_tail_wt` `base_jjqc_tail_cje` `base_jjqc_tail_close` `base_jjqc_tail_zf` `jjyizi_list`
+
+竞价热点板块、抢筹排序。
+
+```python
+# 热点板块竞价
+bkjj       = client.base_bkjj(start_date="2025-06-26", end_date="2025-06-26", type_="1")
+bkjjzq     = client.base_bkjjzq(trade_date="2025-06-26")               # 增强版
+bkjj_stocks= client.base_zqbk_code_list(trade_date="2025-06-26", bk_code="BK0001")
+bk_stocks  = client.base_bk_code_list(start_date="2025-06-26", end_date="2025-06-26", bk_code="BK0001")
+
+# 早盘抢筹
+jjqc       = client.base_jjqc(trade_date="2025-06-26", period="1", type_="1")  # 委托金额
+jjqc_amt   = client.base_jjqc_cje(trade_date="2025-06-26", period="1")          # 成交金额
+jjqc_open  = client.base_jjqc_open(trade_date="2025-06-26", period="1")         # 开盘金额
+jjqc_zf    = client.base_jjqc_zf(trade_date="2025-06-26", period="1")           # 涨幅排序
+
+# 尾盘抢筹
+tail_wt    = client.base_jjqc_tail_wt(trade_date="2025-06-26")          # 委托金额
+tail_cje   = client.base_jjqc_tail_cje(trade_date="2025-06-26")         # 成交金额
+tail_close = client.base_jjqc_tail_close(trade_date="2025-06-26")       # 收盘金额
+tail_zf    = client.base_jjqc_tail_zf(trade_date="2025-06-26")          # 涨幅排序
+
+# 竞价一字板
+yizi       = client.jjyizi_list(trade_date="2025-06-26")
+```
 
 ### 🔧 基础数据（4）
-`base_st` `base_gn` `base_bk` `base_emotional_cycle`
+
+```python
+stocks_st     = client.base_st()                    # ST股票列表
+concept_codes = client.base_gn()                    # 概念代码列表
+sector_codes  = client.base_bk()                    # 板块代码列表
+emotion       = client.base_emotional_cycle()       # 情绪周期
+```
 
 ### 💸 板块资金流与成分（3）
-`base_bk_flow_history` `base_bk_list` `base_code_flow`
+
+```python
+bk_flow  = client.base_bk_flow_history(bk_code="BK0001")                    # 板块资金流
+bk_list  = client.base_bk_list(bk_code="BK0001", page_no=1, page_size=20)   # 板块成分股
+code_flow= client.base_code_flow(code="000001", start_date="2025-06-01",
+           end_date="2025-06-26", page_no=1, page_size=50)                  # 个股资金流向
+```
 
 ### ⚡ 异动数据（3）
-`change_all_history` `change_code_history` `change_ren_qi`
+
+```python
+all_changes = client.change_all_history(start_date="2025-06-01", end_date="2025-06-26", type_="1")
+code_change = client.change_code_history(code="000001", start_date="2025-06-01", end_date="2025-06-26")
+hot_rank    = client.change_ren_qi()                                        # 人气排行
+```
 
 ### 🛡️ 风险监控（4）
-`alarm_data` `alarm_data_unlock` `alarm_data_risk` `alarm_data_serious`
+
+```python
+reduce  = client.alarm_data(trade_date="2025-06-26", type_="1")             # 大股东减持
+unlock  = client.alarm_data_unlock(trade_date="2025-06-26", type_="1")      # 大比例解禁
+risk    = client.alarm_data_risk(trade_date="2025-06-26", type_="1")        # 风险监控
+serious = client.alarm_data_serious(trade_date="2025-06-26", type_="1")     # 严重异动
+```
+
+> 以上 `type_`、`start_date`、`end_date` 等具体值请参考平台文档 [liangmai.pro/docs](https://liangmai.pro/docs)
 
 ---
 
