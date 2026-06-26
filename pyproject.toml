@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "liangmai"
+version = "0.2.1"
+description = "量脉金融数据平台 Python SDK"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+authors = [
+    {name = "Liangmai", email = "support@liangmai.pro"},
+]
+keywords = ["finance", "stock", "market-data", "china-a-shares", "liangmai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+]
+dependencies = [
+    "requests>=2.25",
+]
+
+[project.urls]
+Homepage = "https://liangmai.pro"
+Documentation = "https://liangmai.pro/docs"
+Repository = "https://github.com/liangmai-sdk/liangmai"
+Issues = "https://github.com/liangmai-sdk/liangmai/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["liangmai"]
