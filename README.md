@@ -1,6 +1,6 @@
 <p align="center">
-  <h1 align="center">量脉 · 金融数据平台</h1>
-  <h4 align="center">官方 Python SDK · 105 个金融数据 API</h4>
+  <h1 align="center">量脉金融数据平台 Liangmai</h1>
+  <h4 align="center">Python SDK — 105个金融数据API，覆盖A股/指数/基金/龙虎榜/游资/早盘竞价</h4>
 </p>
 
 <p align="center">
