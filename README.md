@@ -5,7 +5,7 @@
 
 <p align="center">
   <a href="https://pypi.org/project/liangmai/"><img src="https://img.shields.io/pypi/v/liangmai?label=PyPI&color=blue" alt="PyPI"></a>
-  <a href="https://pypi.org/project/liangmai/"><img src="https://img.shields.io/pypi/pyversions/liangmai" alt="Python"></a>
+a href="https://pypi.org/project/liangmai/"><img src="https://img.shields.io/pypi/pyversions/liangmai" alt="Python"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 </p>
 
@@ -87,7 +87,7 @@ except RuntimeError as e:
 | `code=422` | 参数缺失或不合法 | 检查参数名和格式 |
 | `code=403` | Token 无效或无权限 | 确认 Token 正确，且接口已开通 |
 | `code=429` | 请求频率超限 | 降低调用频率 |
-| `code=500` | 上游数据服务临时异常 | SDK 已内置自动重试 |
+| `code=500` | 服务器内部错误（自动重试） | SDK 已内置自动重试 |
 
 ---
 
