@@ -5,14 +5,38 @@ build-backend = "hatchling.build"
 [project]
 name = "liangmai"
 version = "0.2.1"
-description = "量脉金融数据平台 Python SDK"
+description = "量脉金融数据平台 Python SDK — 封装105个金融数据接口，支持A股/指数/基金/龙虎榜/游资/早盘竞价"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.8"
 authors = [
     {name = "Liangmai", email = "support@liangmai.pro"},
 ]
-keywords = ["finance", "stock", "market-data", "china-a-shares", "liangmai"]
+keywords = [
+    "finance",
+    "stock",
+    "market-data",
+    "china-a-shares",
+    "liangmai",
+    "量脉",
+    "金融数据",
+    "A股",
+    "龙虎榜",
+    "游资",
+    "早盘竞价",
+    "板块资金流",
+    "异动监控",
+    "沪深",
+    "港股",
+    "科创板",
+    "指数",
+    "K线",
+    "财务数据",
+    "Python SDK",
+    "金融API",
+    "股票数据",
+    "量化交易",
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
